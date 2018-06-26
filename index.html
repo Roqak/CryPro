@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+        
+        <link rel="stylesheet" href="./css/materialize.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <script src="./js/jquery-3.3.1.min.js"></script>
+        <script src="./js/materialize.js"></script>
+        
+        <style>
+            #loading{
+                margin-top: 0%;
+            }
+            .sym{
+                border-radius: 50%;
+                background-color: white;
+                color: red;
+            }
+            #makeov{
+                border-radius: 10%;
+                width: 20%;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+                <div class="nav-wrapper">
+                  <a href="#" class="brand-logo">Crypro</a>
+                  <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="#">#</a></li>
+                  </ul>
+                </div>
+              </nav>
+              <center>
+                    
+                            <div id="loading" class="progress">
+                                    <div class="indeterminate"></div>
+                                </div>
+                </center>
+
+        <!-- <div id="cryptos"></div> -->
+        <main>
+            <div class="container">
+        <!-- <div id="cryptos" class="row">
+                
+              </div> -->
+              <ul id="cryptos" class="collection">
+                    
+                  </ul>
+            </div>
+            </main>
+
+        <!-- Modal Structure -->
+  <div id="cryptodetails" class="modal">
+        <div class="modal-content">
+          <h4 id="coinName">Modal Header</h4>
+          <!-- <p>A bunch of text</p> -->
+          <center>
+          <div id="circleloading" class="preloader-wrapper big active">
+                <div class="spinner-layer spinner-blue">
+                  <div class="circle-clipper left">
+                    <div class="circle"></div>
+                  </div><div class="gap-patch">
+                    <div class="circle"></div>
+                  </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+                </div>
+            </center>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" id="cum" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+      </div>
+       
+       
+       
+       
+    
+      
+
+ <script>
+  //Modal
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+  //
+  //Hides Loading Div
+  $("#loading").hide();
+  $("#circleloading").hide();
+ //
+ //Ajex Request For The Coinmarketprice API
+  $.ajax({
+  url: "https://api.coinmarketcap.com/v1/ticker/",
+dataType: "json",
+beforeSend: function() {
+    // $('#loading').ajaxStart(function(){
+    //         $(this).show();
+    //         //console.log('shown');
+    //     });
+    //     $("#loading").ajaxStop(function(){
+    //         $(this).hide();
+    //         //  console.log('hidden');
+    //     }); 
+    $("#loading").show();
+    },
+  success: function( result ) {
+    $("#loading").hide();
+    for(a=0; a< result.length; a++){
+        // $("#cryptos").append(result[a].symbol + "-" + result[a].name + "<br>");
+    //     $("#cryptos").append("<div id=\"cryptos\" class=\"col s12 m6\">"+
+    //               "<div class=\"card-panel teal\">"+
+    //                 "<span class=\"white-text\">"+result[a].rank+".<br>"+"<strong class='sym'>"+result[a].symbol+"    </strong>"+ result[a].name +"</span></div></div>")
+    // }
+    $("#cryptos").append("<li id=" +result[a].name+ " class=\"collection-item avatar\"><span id='maevov' class=\"circle\"> <strong><br>"+result[a].symbol+"</strong></span>"+
+                      "<span class=\"title\">"+result[a].name+"</span>"+
+                      "<p>"+result[a].price_usd+" <br> "+result[a].price_btc+" </p>"+
+                      "<a href=\"#cryptodetails\"class=\"secondary-content dodo modal-trigger\"><i id='kkkkk' class=\"material-icons\">info</i></a> </li>")
+    
+    // $(".modal-content").html(result[a].name);
+    }
+        // $("#cryptos").append(result[1].name + "<br>");
+    
+    console.log(result);
+  },
+  error: function(err){
+      console.log(err);
+    // alert(err);
+  }
+});
+///
+$("#cryptos").on("click","li",function(e){
+    var coin = $(this).attr('id');
+    // alert(coin);
+    $("#coinName").html(coin);
+    var sendUrl ="https://api.coinmarketcap.com/v1/ticker/"+ coin +"/";
+    $.ajax({
+        url: sendUrl,
+        dataType: "json",
+        beforeSend: function() {
+    $("#circleloading").show();
+    },
+        success: function(result){
+            $("#circleloading").hide();
+            $("#coinName").html("<center><h4>"+result[0].name+"</h4></center>"+
+            "<p>Price In USD :" + result[0].price_usd+"</p>"+
+            "<p>Price In BTC :" + result[0].price_btc+"</p>"+
+            "<p>24h_volume_usd :" + result[0]["24h_volume_usd"]+"</p>"
+            );
+            // $(".modal-content").append("<p>Price In USD:" + result[0].price_usd+"</p>");
+            // $(".modal-content").append("<p>Price In BTC:" + result[0].price_btc+"</p>");
+            // $(".modal-content").append("<p>24h_volume_usd:" + result[0]["24h_volume_usd"]+"</p>");
+        },
+        error: function(err){
+            console.log(err);
+        }
+    })
+    $(".modal-footer").on("click","a", function(e){
+        // alert("fired");
+        // $(".modal-content").html("");
+    })
+});
+
+</script>
+    </body>
+</html>
